@@ -3,31 +3,39 @@ const EMPTY_HEART = '♡'
 const FULL_HEART = '♥'
 
 // Your JavaScript code goes here!
-const hearts = document.querySelectorAll(".like-glyph");
 
-function clickedHeart () {
-  const heart = this;
-  if (heart.classList.contains("activated-heart")){
-    heart.classList.remove("activated-heart");
-    heart.textContent = EMPTY_HEART;
-  } else {
-    mimicServerCall()
-    .then(() => {
-      heart.classList.add("activated-heart");
-      heart.textContent = FULL_HEART;
-    })
-    .catch(() => {
-      const errorMessage = document.querySelector("#modal");
-      errorMessage.classList.remove("hidden");
-      setTimeout(() => errorMessage.classList.add("hidden"), 3000);
-   })
+const allHearts = document.querySelectorAll(".like-glyph");
+const errorMessage = document.querySelector("div#modal")
+
+
+allHearts.forEach(heart => {
+  heart.addEventListener('click', changeOfHeart);
+})
+
+function changeOfHeart() {
+
+  const heart = this 
+
+if(heart.classList.contains("activated-heart")) {
+  heart.classList.remove("activated-heart");
+  heart.textContent = EMPTY_HEART;
+}else{
+  mimicServerCall()
+  .then(() => {
+    heart.classList.add("activated-heart")
+    heart.textContent = FULL_HEART;
+  })
+  .catch(() => {
+    errorMessage.classList.remove("hidden")
+    setTimeout(hideError, 3000)
+
+    function hideError(){
+      errorMessage.classList.add("hidden");
+    }
+  })
 }
-};
 
-hearts.forEach((heart) => {
-  heart.addEventListener("click", clickedHeart)
-});
-
+}
 
 //------------------------------------------------------------------------------
 // Don't change the code below: this function mocks the server response
